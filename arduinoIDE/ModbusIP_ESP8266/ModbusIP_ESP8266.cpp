@@ -1,6 +1,6 @@
 /*
     ModbusIP_ESP8266.cpp - Source for Modbus IP ESP8266 Library
-    Copyright (C) 2015 André Sarmento Barbosa
+    Copyright (C) 2015 Andrï¿½ Sarmento Barbosa
 */
 #include "ModbusIP_ESP8266.h"
 
@@ -13,6 +13,10 @@ ModbusIP::ModbusIP() {
 void ModbusIP::config(const char* ssid, const char* password) {
 	WiFi.begin(ssid, password);
 	server.begin();
+}
+
+void ModbusIP::configClient(const char* ssid, const char* password) {
+	WiFi.begin(ssid, password);
 }
 
 void ModbusIP::task() {
@@ -69,6 +73,7 @@ void ModbusIP::task() {
 		}
 	}
 }
+
 	/*
     uint8_t buffer[128] = {0};
     uint8_t mux_id;
