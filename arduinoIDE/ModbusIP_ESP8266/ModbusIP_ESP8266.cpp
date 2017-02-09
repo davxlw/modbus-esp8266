@@ -17,7 +17,6 @@ void ModbusIP::config(const char* ssid, const char* password) {
 
 void ModbusIP::configClient(const char* ssid, const char* password) {
 	WiFi.begin(ssid, password);
-	WiFiClient client;
 }
 
 void ModbusIP::task() {
