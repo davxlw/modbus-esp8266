@@ -80,6 +80,32 @@ void ModbusIP::task() {
 	}
 }
 
+int ModbusIP::getResponse(const byte* response, int length) {
+	const int MBAP_SIZE = 7;
+	int value;
+	for (int i = 0; i < MBAP_SIZE; i++) {
+		_MBAP[i] = response[i]; //Get MBAP
+	}
+	_len = _MBAP[4] << 8 | _MBAP[5];
+	_len--; // Do not count with last byte from MBAP
+	if (_MBAP[2] != 0 || _MBAP[3] != 0)
+		return -1;   //Not a MODBUSIP packet
+	if (_len > MODBUSIP_MAXFRAME)
+		return -1;      //Length is over MODBUSIP_MAXFRAME
+	_frame = (byte*) malloc(_len);
+
+	length = length - MBAP_SIZE;
+
+	for (int i = 0; i < length; i++) {
+		_frame[i] = response[i + MBAP_SIZE]; //Get Modbus PDU
+	}
+	value = _frame[2] << 8 | _frame[3];
+
+	free(_frame);
+	_len = 0;
+
+	return value;
+}
 /*
  uint8_t buffer[128] = {0};
  uint8_t mux_id;

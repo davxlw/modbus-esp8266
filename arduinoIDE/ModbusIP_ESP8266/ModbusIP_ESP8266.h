@@ -20,6 +20,7 @@ public:
 	void config(const char* ssid, const char* password);
 	void configClient(const char* ssid, const char* password);
 	void sendRequest(const char* host);
+	int getResponse(const byte* response, int length);
 	void task();
 };
 
