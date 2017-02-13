@@ -80,6 +80,41 @@ void ModbusIP::task() {
 	}
 }
 
+void ModbusIP::sendRequest(WiFiClient& client, /*const char* host,*/
+word address) {
+	word nbReg = 0x0001;
+
+	byte length;
+	length = /*sizeof(0xFF) +*/sizeof(0x03) + sizeof(address) + sizeof(nbReg);
+	_frame = (byte*) malloc(length);
+
+	_frame[0] = 0x03;
+	_frame[1] = address >> 8;     //0x00;
+	_frame[2] = address & 0x00FF; //0x00;
+	_frame[3] = nbReg >> 8;       //0x00;
+	_frame[4] = nbReg & 0x00FF;   //0x01;
+
+	_MBAP[0] = 0x00;
+	_MBAP[1] = 0x00;
+	_MBAP[2] = 0x00;
+	_MBAP[3] = 0x00;
+	_MBAP[4] = (length + 1) >> 8;     //0x00;
+	_MBAP[5] = (length + 1) & 0x00FF; //0x06;
+	_MBAP[6] = 0xFF;
+
+	size_t send_len = (unsigned int) length + 7;
+	uint8_t request[send_len];
+
+	for (int i = 0; i < 7; i++)
+		request[i] = _MBAP[i];
+	for (int i = 0; i < length; i++)
+		request[i + 7] = _frame[i];
+
+	client.write(request, send_len);
+
+	free(_frame);
+}
+
 int ModbusIP::getResponse(const byte* response, int length) {
 	const int MBAP_SIZE = 7;
 	int value;
@@ -106,6 +141,7 @@ int ModbusIP::getResponse(const byte* response, int length) {
 
 	return value;
 }
+
 /*
  uint8_t buffer[128] = {0};
  uint8_t mux_id;

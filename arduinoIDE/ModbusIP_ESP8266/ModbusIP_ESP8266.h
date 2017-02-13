@@ -19,7 +19,7 @@ public:
 	ModbusIP();
 	void config(const char* ssid, const char* password);
 	void configClient(const char* ssid, const char* password);
-	void sendRequest(const char* host);
+	void sendRequest(WiFiClient& client, /*const char* host,*/ word address);
 	int getResponse(const byte* response, int length);
 	void task();
 };
